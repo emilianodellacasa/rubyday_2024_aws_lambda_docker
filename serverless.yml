@@ -1,0 +1,29 @@
+service: HTTPtoSMS
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: eu-west-1
+  endpointType: REGIONAL
+  timeout: 30
+  memorySize: 1024
+  architecture: x86_64
+  deploymentMethod: direct
+  ecr:
+  images:
+    my-task:
+      path: ./
+      file: Dockerfile
+
+functions:
+  send:
+    image:
+      name: my-task
+    ephemeralStorageSize: 1024
+    environment:
+      RUBY_YJIT_ENABLE: 1
+    events:
+      - http:
+        path: send
+        method: post
+        cors: true
